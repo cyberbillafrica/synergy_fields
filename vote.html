@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Simple Counter</title>
+    <style>
+        body{
+            font-family: Arial;
+            text-align: center;
+            margin-top: 50px;
+        }
+
+        .container{
+            display: flex;
+            justify-content: center;
+            gap: 100px;
+        }
+
+        .candidate{
+            font-size: 24px;
+        }
+
+        button{
+            margin-top: 10px;
+            padding: 10px 20px;
+            font-size: 18px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+
+<body>
+
+<h1>Vote Counter</h1>
+
+<div class="container">
+
+    <div class="candidate">
+        <h2>John</h2>
+        <p id="countA">0</p>
+        <button onclick="increaseA()">A</button>
+    </div>
+
+    <div class="candidate">
+        <h2>Mary</h2>
+        <p id="countB">0</p>
+        <button onclick="increaseB()">B</button>
+    </div>
+
+</div>
+
+<script>
+let countA = 0;
+let countB = 0;
+
+function increaseA(){
+    countA++;
+    document.getElementById("countA").innerText = countA;
+}
+
+function increaseB(){
+    countB++;
+    document.getElementById("countB").innerText = countB;
+}
+</script>
+
+</body>
+</html>
