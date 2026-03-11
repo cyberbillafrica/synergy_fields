@@ -1,106 +1,179 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>Vote Counter</title>
+<title>Voting Dashboard</title>
 
 <style>
+
 body{
     font-family: Arial, sans-serif;
-    text-align: center;
-    margin-top: 50px;
-    background:#f5f5f5;
+    text-align:center;
+    background:#f4f6f8;
+    margin-top:40px;
 }
 
 h1{
-    margin-bottom:40px;
+    margin-bottom:30px;
 }
 
 .container{
     display:flex;
     justify-content:center;
-    gap:80px;
+    gap:50px;
 }
 
 .candidate{
     background:white;
-    padding:25px;
+    padding:20px;
+    width:200px;
     border-radius:10px;
-    box-shadow:0 4px 10px rgba(0,0,0,0.1);
-    width:150px;
+    box-shadow:0 4px 12px rgba(0,0,0,0.1);
 }
 
 .count{
-    font-size:40px;
-    margin:15px 0;
+    font-size:36px;
+    margin:10px 0;
 }
 
 button{
-    padding:10px 20px;
+    padding:10px 18px;
     font-size:16px;
     border:none;
     border-radius:6px;
-    cursor:pointer;
     background:#3498db;
     color:white;
+    cursor:pointer;
 }
 
 button:hover{
     background:#2980b9;
 }
 
+.bar{
+    height:10px;
+    background:#ddd;
+    margin-top:10px;
+    border-radius:5px;
+}
+
+.fill{
+    height:100%;
+    width:0%;
+    background:#2ecc71;
+    border-radius:5px;
+}
+
+#winner{
+    margin-top:30px;
+    font-size:20px;
+    font-weight:bold;
+}
+
 .reset{
-    margin-top:40px;
+    margin-top:20px;
     background:#e74c3c;
 }
 
 .reset:hover{
     background:#c0392b;
 }
+
 </style>
 </head>
 
 <body>
 
-<h1>Vote Counter</h1>
+<h1>Voting Dashboard</h1>
 
 <div class="container">
 
 <div class="candidate">
 <h2>John</h2>
-<p class="count" id="john">0</p>
-<button onclick="increaseVote('john')">Vote</button>
+<p class="count" id="johnCount">0</p>
+<button onclick="vote('john')">Vote</button>
+
+<div class="bar">
+<div class="fill" id="johnBar"></div>
 </div>
+
+</div>
+
 
 <div class="candidate">
 <h2>Mary</h2>
-<p class="count" id="mary">0</p>
-<button onclick="increaseVote('mary')">Vote</button>
+<p class="count" id="maryCount">0</p>
+<button onclick="vote('mary')">Vote</button>
+
+<div class="bar">
+<div class="fill" id="maryBar"></div>
 </div>
 
 </div>
+
+</div>
+
+<div id="winner">No winner yet</div>
 
 <button class="reset" onclick="resetVotes()">Reset Votes</button>
 
 <script>
 
-let votes = {
-    john: 0,
-    mary: 0
+let votes = JSON.parse(localStorage.getItem("votes")) || {
+    john:0,
+    mary:0
 };
 
-function increaseVote(candidate){
+function vote(candidate){
+
     votes[candidate]++;
-    document.getElementById(candidate).innerText = votes[candidate];
+
+    saveVotes();
+    updateUI();
+}
+
+function saveVotes(){
+    localStorage.setItem("votes", JSON.stringify(votes));
+}
+
+function updateUI(){
+
+    document.getElementById("johnCount").innerText = votes.john;
+    document.getElementById("maryCount").innerText = votes.mary;
+
+    let total = votes.john + votes.mary;
+
+    let johnPercent = total ? (votes.john / total)*100 : 0;
+    let maryPercent = total ? (votes.mary / total)*100 : 0;
+
+    document.getElementById("johnBar").style.width = johnPercent + "%";
+    document.getElementById("maryBar").style.width = maryPercent + "%";
+
+    let winnerText = "No winner yet";
+
+    if(votes.john > votes.mary){
+        winnerText = "🏆 John is winning";
+    }
+    else if(votes.mary > votes.john){
+        winnerText = "🏆 Mary is winning";
+    }
+    else if(total > 0){
+        winnerText = "🤝 It's a tie";
+    }
+
+    document.getElementById("winner").innerText = winnerText;
 }
 
 function resetVotes(){
-    for(let candidate in votes){
-        votes[candidate] = 0;
-        document.getElementById(candidate).innerText = 0;
-    }
+
+    votes = {john:0, mary:0};
+
+    saveVotes();
+    updateUI();
 }
+
+updateUI();
 
 </script>
 
 </body>
-</html>
+</html> 
